@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dwight Darren's Special Day</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold: #C5A059;
+            --soft-white: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: var(--soft-white);
+            overflow-x: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes bearFloat {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        @keyframes cloudDrift {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+            100% { transform: translateX(0); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.7); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .floating-img {
+            animation: floating 5s ease-in-out infinite;
+        }
+
+        .star {
+            position: fixed;
+            background-color: #ffffff;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: center;
+            padding: 15px 0;
+            z-index: 1000;
+            animation: slideDown 0.8s ease;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #666;
+            margin: 0 8px;
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            max-width: 80px;
+        }
+
+        nav a i {
+            color: var(--gold);
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            height: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-layer {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 25px 0;
+            margin-top: -5px;
+            position: relative;
+        }
+
+        .image-layer img.main-photo {
+            width: 98%;
+            max-width: 580px;
+            height: auto;
+            border-radius: 4px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+            position: relative;
+            z-index: 2;
+        }
+
+        .section-divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .section-divider::before, .section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            opacity: 0.6;
+        }
+
+        .section-divider span {
+            padding: 0 12px;
+            color: var(--gold);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+        }
+
+        #music-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 2000;
+            background: white;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            color: var(--gold);
+        }
+
+        .deco {
+            position: absolute;
+            z-index: 3;
+            pointer-events: none;
+            height: auto;
+        }
+
+        .bear-flying { width: 110px; animation: bearFloat 4s ease-in-out infinite; }
+        .bear-flying-large { width: 140px; animation: bearFloat 4.5s ease-in-out infinite; }
+        .cloud-deco { width: 130px; opacity: 0.8; animation: cloudDrift 8s ease-in-out infinite; z-index: 1; }
+        .balloon-deco { width: 80px; animation: bearFloat 5s ease-in-out reverse infinite; }
+        .balloon-deco-large { width: 125px; animation: bearFloat 5s ease-in-out reverse infinite; }
+
+        .home-bear-left { top: 2%; left: 5%; width: 100px; }
+        .home-cloud-left { top: 8%; left: 2%; width: 120px; opacity: 0.7; z-index: 1; }
+        
+        .home-bear-right { bottom: 5%; right: 5%; width: 100px; transform: scaleX(-1); }
+        .home-cloud-right { bottom: 2%; right: 2%; width: 130px; opacity: 0.7; z-index: 1; }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            font-size: 0.7rem;
+            color: #bbb;
+            letter-spacing: 2px;
+        }
+
+        .anchor {
+            scroll-margin-top: 51px;
+        }
+
+        .path-container {
+            position: relative;
+            width: 100%;
+            max-width: 580px;
+        }
+
+        .road-svg{
+            position:absolute;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:4;
+            pointer-events:none;
+        }
+
+        .path-container img.main-photo {
+            width: 100%;
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            nav { padding: 12px 0; }
+            nav a { margin: 0 2px; font-size: 0.45rem; max-width: none; }
+            nav a i { font-size: 1rem; }
+            .image-layer img.main-photo { width: 100%; border-radius: 0; }
+            .bear-flying { width: 85px; }
+            .bear-flying-large { width: 110px; }
+            .cloud-deco { width: 95px; }
+            .balloon-deco { width: 65px; }
+            .balloon-deco-large { width: 95px; }
+            .home-bear-left { top: 5%; left: 2%; }
+            .home-bear-right { bottom: 8%; right: 2%; }
+            .anchor { scroll-margin-top: 45px; }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="Twinkle Twinkle Little Star Instrumental Version.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="music-control" onclick="toggleMusic()">
+        <i id="music-icon" class="fas fa-music"></i>
+    </div>
+
+    <nav>
+        <a href="#home"><i class="fas fa-home"></i>HOME</a>
+        <a href="#location"><i class="fas fa-map-marker-alt"></i>LOCATION</a>
+        <a href="#godparent"><i class="fas fa-user-friends"></i>GODPARENT</a>
+        <a href="#gift"><i class="fas fa-gift"></i>GIFT</a>
+        <a href="#health"><i class="fas fa-hand-holding-heart"></i>HEALTH</a>
+    </nav>
+
+    <div id="home" class="image-layer reveal active" style="padding-top: 0; margin-top: -1px;"> 
+        <img src="cloud.png" class="deco home-cloud-left" alt="">
+        <img src="bearwithballons.png" class="deco bear-flying home-bear-left" alt="Top Left Bear">
+        
+        <img src="Dwight.jpg" class="main-photo floating-img" alt="Dwight Darren Baptism">
+        
+        <img src="cloud.png" class="deco home-cloud-right" alt="">
+        <img src="bearwithballons.png" class="deco bear-flying home-bear-right" alt="Bottom Right Bear">
+    </div>
+
+    <div class="section-divider reveal"><span>DWIGHT DARREN</span></div>
+
+    <div id="location" class="anchor image-layer reveal" style="padding-top: 0; margin-top: -1px;">
+        <img src="cloud.png" class="deco cloud-deco" style="top: -20px; left: 2%; width: 110px;" alt="">
+        <img src="balloons.png" class="deco balloon-deco" style="top: -10px; right: 4%; width: 75px;" alt="">
+        <div class="path-container">
+
+    <img src="LocationGuide.png" class="main-photo" alt="Location">
+
+    <svg class="road-svg"
+         viewBox="0 0 580 700"
+         xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink">
+        <path id="carPath" 
+              d="M178,212 C185,320 270,350 320,380 C360,405 380,415 390,420" 
+              fill="none" 
+              stroke="none" />
+        <image xlink:href="Dwightcar.png" width="192" height="192" x="-96" y="-96" style="transform-box: fill-box; transform-origin: center;">
+            <animateMotion dur="14s" repeatCount="indefinite" rotate="auto">
+                <mpath xlink:href="#carPath" />
+            </animateMotion>
+        </image>
+    </svg>
+
+</div>
+        <img src="bearwithballons.png" class="deco bear-flying-large" style="top: 35%; left: 0%; width: 120px;" alt="">
+    </div>
+
+    <div class="section-divider reveal"><span>&#10024;</span></div>
+
+    <div id="godparent" class="anchor image-layer reveal" style="padding-top: 0; margin-top: -1px;">
+        <img src="cloud.png" class="deco cloud-deco" style="top: -15px; left: 5%; width: 100px;" alt="">
+        <img src="Godparent.png" class="main-photo" alt="Godparent">
+        <img src="bearwithballons.png" class="deco bear-flying" style="bottom: 5%; right: 2%; width: 90px;" alt="">
+    </div>
+
+    <div class="section-divider reveal"><span>&#10024;</span></div>
+
+    <div id="gift" class="anchor image-layer reveal" style="padding-top: 0; margin-top: -1px;">
+        <img src="bearwithballons.png" class="deco bear-flying" style="top: -15px; right: 3%; width: 100px;" alt="">
+        <img src="cloud.png" class="deco cloud-deco" style="top: 10%; left: 2%; width: 110px;" alt="">
+        <img src="Gift.jpg" class="main-photo" alt="Gift">
+        <img src="balloons.png" class="deco balloon-deco-large" style="bottom: 10%; right: -2%; width: 115px;" alt="">
+    </div>
+
+    <div class="section-divider reveal"><span>&#10024;</span></div>
+
+    <div id="health" class="anchor image-layer reveal" style="padding-top: 0; margin-top: -1px;">
+        <img src="bearwithballons.png" class="deco bear-flying" style="top: -20px; left: 3%; width: 100px;" alt="">
+        <img src="cloud.png" class="deco cloud-deco" style="bottom: -10px; right: 2%; width: 110px;" alt="">
+        <img src="healthprotocol.png" class="main-photo" alt="Health">
+        <img src="balloons.png" class="deco balloon-deco" style="top: 30%; right: 3%; width: 75px;" alt="">
+    </div>
+
+    <footer>
+        DWIGHT DARREN &bull; 2026
+    </footer>
+
+    <script>
+        const music = document.getElementById("bgMusic");
+        const icon = document.getElementById("music-icon");
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+                icon.className = "fas fa-volume-up";
+            } else {
+                music.pause();
+                icon.className = "fas fa-volume-mute";
+            }
+        }
+
+        function forceAutoplay() {
+            music.play().then(() => {
+                icon.className = "fas fa-volume-up";
+                ["click", "touchstart", "scroll", "keydown"].forEach(e => 
+                    window.removeEventListener(e, forceAutoplay)
+                );
+            }).catch(error => {
+                console.log("Autoplay waiting for user interaction...");
+            });
+        }
+
+        window.addEventListener('load', forceAutoplay);
+        ["click", "touchstart", "scroll", "keydown"].forEach(e => 
+            window.addEventListener(e, forceAutoplay)
+        );
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        function createWhiteTwinklingStars() {
+            const starCount = 60;
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 2.5 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = `${Math.random() * 100}vh`;
+                star.style.left = `${Math.random() * 100}vw`;
+                star.style.setProperty('--duration', `${Math.random() * 3 + 1.5}s`);
+                document.body.appendChild(star);
+            }
+        }
+        createWhiteTwinklingStars();
+    </script>
+</body>
+</html>
